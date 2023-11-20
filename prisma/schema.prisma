@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userName  String   @unique
+  Gang      Gang[]
+}
+
+model House {
+  id              Int               @id @default(autoincrement())
+  name            String
+  isOutlander     Boolean           @default(false)
+  Gang            Gang[]
+  HouseWeaponList HouseWeaponList[]
+}
+
+model Gang {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  houseId   Int
+  house     House    @relation(fields: [houseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model UnitType {
+  id          Int    @id @default(autoincrement())
+  name        String
+  baseStats   Json
+  maxStats    Json
+  startingXp  String
+  minQuantity Int
+  maxQuantity Int
+  minPercent  Int
+  maxPercent  Int
+  Unit        Unit[]
+}
+
+model Unit {
+  id         Int      @id @default(autoincrement())
+  name       String
+  unitTypeId Int
+  unitType   UnitType @relation(fields: [unitTypeId], references: [id])
+}
+
+model HouseWeaponList {
+  houseId Int   @id
+  house   House @relation(fields: [houseId], references: [id])
+  list    Json
+}
+
+model WeaponType {
+  id   Int    @id @default(autoincrement())
+  type String
+}
+
+model Ammo {
+  id            Int          @id @default(autoincrement())
+  shortRange    Int
+  longRange     Int
+  longModifier  Int
+  shortModifier Int
+  strength      Int
+  // Dice parser
+  damage        String
+  saveModifier  Int
+  ammoRoll      Int
+  weaponId      Int
+  weapon        RangedWeapon @relation(fields: [weaponId], references: [id])
+  // TODO figure out special
+  default       Boolean?     @default(true)
+  template      String?      @default(null)
+}
+
+model RangedWeapon {
+  id           Int        @id @default(autoincrement())
+  name         String
+  weaponTypeId Int
+  weaponType   WeaponType @relation(fields: [weaponTypeId], references: [id])
+}
+
+model HandToHandWeapon {
+  id       Int    @id @default(autoincrement())
+  name     String
+  // Integrate with dice roll parser
+  strength String
+  damage   String
+}
