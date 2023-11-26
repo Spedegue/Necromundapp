@@ -10,6 +10,225 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model House {
+  name                      String                      @id @unique
+  isOutlander               Boolean                     @default(false)
+  Gang                      Gang[]
+  HouseWeaponList           HouseRangedWeaponList[]
+  HouseUnitType             HouseUnitType[]
+  HouseHandToHandWeaponList HouseHandToHandWeaponList[]
+  HouseAmmoList             HouseAmmoList[]
+  HouseEquipmentList        HouseEquipmentList[]
+}
+
+model UnitType {
+  name           String       @id @unique
+  unitCategoryId String
+  cost           Int
+  baseStats      Json
+  maxStats       Json
+  startingXp     String
+  minQuantity    Int?
+  maxQuantity    Int?
+  minPercent     Int?
+  maxPercent     Int?
+  unit           Unit[]
+  unitCategory   UnitCategory @relation(fields: [unitCategoryId], references: [id])
+}
+
+model UnitCategory {
+  id            String          @id
+  HouseUnitType HouseUnitType[]
+  UnitType      UnitType[]
+}
+
+model HouseUnitType {
+  houseId        String
+  unitCategoryId String
+  house          House        @relation(fields: [houseId], references: [name])
+  unitCategory   UnitCategory @relation(fields: [unitCategoryId], references: [id])
+
+  @@id([houseId, unitCategoryId])
+}
+
+model SkillList {
+  id            Int             @id @default(autoincrement())
+  agility       Boolean?
+  combat        Boolean?
+  ferocity      Boolean?
+  muscle        Boolean?
+  shooting      Boolean?
+  stealth       Boolean?
+  techno        Boolean?
+  UnitSkillList UnitSkillList[]
+}
+
+model UnitSkillList {
+  id          Int       @id @default(autoincrement())
+  skillListId Int
+  skillList   SkillList @relation(fields: [skillListId], references: [id])
+}
+
+// model HouseSkillList {
+//   id    String   @id @default(autoincrement())
+//   house House @relation(fields: [id], references: [id])
+//   list  Json
+// }
+
+model SkillType {
+  id    String  @id
+  Skill Skill[]
+}
+
+model Skill {
+  id          Int       @id @default(autoincrement())
+  name        String
+  roll        Int
+  skillTypeId String
+  skillType   SkillType @relation(fields: [skillTypeId], references: [id])
+}
+
+model Territory {
+  id     Int    @id @default(autoincrement())
+  name   String
+  // Dice parser
+  income String
+}
+
+model HouseRangedWeaponList {
+  houseId    String       @id
+  weaponId   Int
+  leaderOnly Boolean      @default(false)
+  weapon     RangedWeapon @relation(fields: [weaponId], references: [id])
+  house      House        @relation(fields: [houseId], references: [name])
+}
+
+model HouseHandToHandWeaponList {
+  houseId    String           @id
+  weaponId   Int
+  leaderOnly Boolean          @default(false)
+  weapon     HandToHandWeapon @relation(fields: [weaponId], references: [id])
+  house      House            @relation(fields: [houseId], references: [name])
+}
+
+model HouseAmmoList {
+  houseId    String  @id
+  ammoId     Int
+  leaderOnly Boolean @default(false)
+  ammo       Ammo    @relation(fields: [ammoId], references: [id])
+  house      House   @relation(fields: [houseId], references: [name])
+}
+
+model HouseEquipmentList {
+  houseId     String    @id
+  equipmentId Int
+  leaderOnly  Boolean   @default(false)
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  house       House     @relation(fields: [houseId], references: [name])
+}
+
+model WeaponType {
+  name             String             @id @unique
+  RangedWeapon     RangedWeapon[]
+  HandToHandWeapon HandToHandWeapon[]
+}
+
+model Ammo {
+  id                Int             @id @default(autoincrement())
+  name              String          @unique
+  shortRange        Int
+  longRange         Int
+  longModifier      Int             @default(0)
+  shortModifier     Int             @default(0)
+  strength          Int
+  // Dice parser
+  damage            String
+  saveModifier      Int             @default(0)
+  ammoRoll          Int
+  weaponId          Int
+  weapon            RangedWeapon    @relation(fields: [weaponId], references: [id])
+  // TODO figure out special
+  // Probably a hook
+  // Actually probably not, need to figure out which are context dependert and if logic can be inserted where relevant
+  // E.g. Check for parry at HTH, check for knock-back when doing initiative test
+  // This is likely to get messy
+  // Maybe a hook for each thing, e.g. useFall with all things that can affect it
+  default           Boolean?        @default(true)
+  template          String?
+  sustainedFireDice Int             @default(0)
+  AmmoSpecial       AmmoSpecial[]
+  HouseAmmoList     HouseAmmoList[]
+}
+
+model RangedWeapon {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @unique
+  weaponTypeId          String
+  weaponType            WeaponType              @relation(fields: [weaponTypeId], references: [name])
+  ammo                  Ammo[]
+  HouseRangedWeaponList HouseRangedWeaponList[]
+}
+
+model HandToHandWeapon {
+  id                        Int                         @id @default(autoincrement())
+  name                      String                      @unique
+  // Integrate with dice roll parser
+  strength                  String
+  damage                    String
+  saveModifier              Int                         @default(0)
+  weaponTypeId              String                      @default("Hand-to-Hand")
+  weaponType                WeaponType                  @relation(fields: [weaponTypeId], references: [name])
+  HandToHandWeaponSpecial   HandToHandWeaponSpecial[]
+  HouseHandToHandWeaponList HouseHandToHandWeaponList[]
+}
+
+model EquipmentType {
+  id        String      @id @unique
+  Equipment Equipment[]
+}
+
+model Equipment {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  equipmentTypeId    String
+  equipmentType      EquipmentType        @relation(fields: [equipmentTypeId], references: [id])
+  HouseEquipmentList HouseEquipmentList[]
+}
+
+model SeriousInjury {
+  // Injury chart Id? E.g. for shock maul, plague zombies etc.
+  id   Int    @id
+  name String
+  //   TODO - useSeriousInjury hook
+}
+
+model Special {
+  id                      Int                       @id @default(autoincrement())
+  name                    String
+  HandToHandWeaponSpecial HandToHandWeaponSpecial[]
+  AmmoSpecial             AmmoSpecial[]
+}
+
+model HandToHandWeaponSpecial {
+  specialId Int
+  special   Special          @relation(fields: [specialId], references: [id])
+  weaponId  Int
+  weapon    HandToHandWeapon @relation(fields: [weaponId], references: [id])
+
+  @@id([specialId, weaponId])
+}
+
+model AmmoSpecial {
+  specialId Int
+  special   Special @relation(fields: [specialId], references: [id])
+  ammoId    Int
+  ammo      Ammo    @relation(fields: [ammoId], references: [id])
+
+  @@id([specialId, ammoId])
+}
+
+// Non-Fixed models
+
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -17,12 +236,15 @@ model User {
   Gang      Gang[]
 }
 
-model House {
-  id              Int               @id @default(autoincrement())
-  name            String
-  isOutlander     Boolean           @default(false)
-  Gang            Gang[]
-  HouseWeaponList HouseWeaponList[]
+model Game {
+  id      Int        @id @default(autoincrement())
+  gangAId Int
+  gangBId Int
+  status  GameStatus
+  state   Json
+  // TODO Figure this out
+  // gangA   Gang       @relation("GangA", fields: [gangAId], references: [id])
+  // gangB   Gang       @relation("GangB", fields: [gangBId], references: [id])
 }
 
 model Gang {
@@ -30,72 +252,23 @@ model Gang {
   name      String
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  houseId   Int
-  house     House    @relation(fields: [houseId], references: [id])
+  houseId   String
+  house     House    @relation(fields: [houseId], references: [name])
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-}
-
-model UnitType {
-  id          Int    @id @default(autoincrement())
-  name        String
-  baseStats   Json
-  maxStats    Json
-  startingXp  String
-  minQuantity Int
-  maxQuantity Int
-  minPercent  Int
-  maxPercent  Int
-  Unit        Unit[]
 }
 
 model Unit {
   id         Int      @id @default(autoincrement())
   name       String
-  unitTypeId Int
-  unitType   UnitType @relation(fields: [unitTypeId], references: [id])
+  unitTypeId String
+  unitType   UnitType @relation(fields: [unitTypeId], references: [name])
 }
 
-model HouseWeaponList {
-  houseId Int   @id
-  house   House @relation(fields: [houseId], references: [id])
-  list    Json
-}
-
-model WeaponType {
-  id   Int    @id @default(autoincrement())
-  type String
-}
-
-model Ammo {
-  id            Int          @id @default(autoincrement())
-  shortRange    Int
-  longRange     Int
-  longModifier  Int
-  shortModifier Int
-  strength      Int
-  // Dice parser
-  damage        String
-  saveModifier  Int
-  ammoRoll      Int
-  weaponId      Int
-  weapon        RangedWeapon @relation(fields: [weaponId], references: [id])
-  // TODO figure out special
-  default       Boolean?     @default(true)
-  template      String?      @default(null)
-}
-
-model RangedWeapon {
-  id           Int        @id @default(autoincrement())
-  name         String
-  weaponTypeId Int
-  weaponType   WeaponType @relation(fields: [weaponTypeId], references: [id])
-}
-
-model HandToHandWeapon {
-  id       Int    @id @default(autoincrement())
-  name     String
-  // Integrate with dice roll parser
-  strength String
-  damage   String
+enum GameStatus {
+  PENDING
+  PREGAME
+  ACTIVE
+  PBS
+  COMPLETE
 }
