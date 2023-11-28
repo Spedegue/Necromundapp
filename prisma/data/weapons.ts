@@ -1,57 +1,57 @@
 import { Prisma } from "@prisma/client";
-import { WeaponType } from "@/enums/weaponType";
-import { Ammo, HandToHandWeapons, RangedWeapons } from "@/enums/weapons";
+import { WeaponType } from "../../src/enums/weaponType";
+import { Ammo, HandToHandWeapon, RangedWeapon } from "../../src/enums/weapons";
 
 export const meleeWeapons: Array<Prisma.HandToHandWeaponCreateInput> = [
   {
-    name: HandToHandWeapons.Knife,
+    name: HandToHandWeapon.Knife,
     strength: "{userStrength}",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.ChainOrFlail,
+    name: HandToHandWeapon.ChainOrFlail,
     strength: "{userStrength}+1",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.Club,
+    name: HandToHandWeapon.Club,
     strength: "{userStrength}+1",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.MassiveWeapon,
+    name: HandToHandWeapon.MassiveWeapon,
     strength: "{userStrength}+2",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.Sword,
+    name: HandToHandWeapon.Sword,
     strength: "{userStrength}",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.Chainsword,
+    name: HandToHandWeapon.Chainsword,
     strength: "4",
     damage: "1",
     saveModifier: -2,
   },
   {
-    name: HandToHandWeapons.PowerAxe,
+    name: HandToHandWeapon.PowerAxe,
     strength: "{userStrength}+3",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.ShockMaul,
+    name: HandToHandWeapon.ShockMaul,
     strength: "5",
     damage: "1",
     saveModifier: -2,
   },
   {
-    name: HandToHandWeapons.PowerSword,
+    name: HandToHandWeapon.PowerSword,
     strength: "{userStrength}+2",
     damage: "1",
   },
   {
-    name: HandToHandWeapons.PowerFist,
+    name: HandToHandWeapon.PowerFist,
     strength: "{userStrength}+5",
     damage: "d3",
   },
@@ -63,11 +63,17 @@ export const weaponTypes: Array<Prisma.WeaponTypeCreateInput> = [
   { name: WeaponType.Special },
   { name: WeaponType.Heavy },
   { name: WeaponType.HandToHand },
+  { name: WeaponType.Throw },
+  { name: WeaponType.Spirit },
+  { name: WeaponType.Scaly },
+  { name: WeaponType.Primitive },
+  { name: WeaponType.Spyrer },
+  { name: WeaponType.PitSlave },
 ];
 
 export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
   {
-    name: RangedWeapons.StubGun,
+    name: RangedWeapon.StubGun,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       createMany: {
@@ -97,7 +103,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Autopistol,
+    name: RangedWeapon.Autopistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -112,7 +118,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Laspistol,
+    name: RangedWeapon.Laspistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -127,7 +133,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HandFlamer,
+    name: RangedWeapon.HandFlamer,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -144,7 +150,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.BoltPistol,
+    name: RangedWeapon.BoltPistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -160,7 +166,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.PlasmaPistol,
+    name: RangedWeapon.PlasmaPistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       createMany: {
@@ -191,7 +197,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.NeedlePistol,
+    name: RangedWeapon.NeedlePistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -208,7 +214,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.WebPistol,
+    name: RangedWeapon.WebPistol,
     weaponType: { connect: { name: WeaponType.Pistol } },
     ammo: {
       create: {
@@ -224,7 +230,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Autogun,
+    name: RangedWeapon.Autogun,
     weaponType: { connect: { name: WeaponType.Basic } },
     ammo: {
       create: {
@@ -240,7 +246,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Shotgun,
+    name: RangedWeapon.Shotgun,
     weaponType: { connect: { name: WeaponType.Basic } },
     ammo: {
       createMany: {
@@ -291,7 +297,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   TODO Add special
           },
           {
-            name: Ammo.Bolt,
+            name: Ammo.BoltShells,
             shortRange: 4,
             longRange: 24,
             shortModifier: 1,
@@ -306,7 +312,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HuntingRifle,
+    name: RangedWeapon.HuntingRifle,
     weaponType: { connect: { name: WeaponType.Basic } },
     ammo: {
       create: {
@@ -323,7 +329,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Lasgun,
+    name: RangedWeapon.Lasgun,
     weaponType: { connect: { name: WeaponType.Basic } },
     ammo: {
       create: {
@@ -339,7 +345,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Boltgun,
+    name: RangedWeapon.Boltgun,
     weaponType: { connect: { name: WeaponType.Basic } },
     ammo: {
       create: {
@@ -355,7 +361,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Autoslugger,
+    name: RangedWeapon.Autoslugger,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       create: {
@@ -372,7 +378,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Flamer,
+    name: RangedWeapon.Flamer,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       create: {
@@ -389,12 +395,13 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.GrenadeLauncher,
+    name: RangedWeapon.GrenadeLauncher,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       createMany: {
         data: [
           {
+            isThrowable: true,
             name: Ammo.FragGrenade,
             shortRange: 14,
             longRange: 28,
@@ -408,6 +415,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.SmokeBomb,
             shortRange: 14,
             longRange: 28,
@@ -420,6 +428,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.ChokeGrenade,
             shortRange: 14,
             longRange: 28,
@@ -432,6 +441,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.ScareGrenade,
             shortRange: 14,
             longRange: 28,
@@ -444,6 +454,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.PhotonFlare,
             shortRange: 14,
             longRange: 28,
@@ -456,6 +467,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             default: false, //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.KrakGrenade,
             shortRange: 14,
             longRange: 28,
@@ -467,6 +479,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.PlasmaGrenade,
             shortRange: 14,
             longRange: 28,
@@ -480,6 +493,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
             default: false, //   Todo specials
           },
           {
+            isThrowable: true,
             name: Ammo.HallucinogenGrenade,
             shortRange: 14,
             longRange: 28,
@@ -497,7 +511,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.PlasmaGun,
+    name: RangedWeapon.PlasmaGun,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       createMany: {
@@ -528,7 +542,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Meltagun,
+    name: RangedWeapon.Meltagun,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       create: {
@@ -545,7 +559,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.NeedleRifle,
+    name: RangedWeapon.NeedleRifle,
     weaponType: { connect: { name: WeaponType.Special } },
     ammo: {
       create: {
@@ -562,7 +576,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HeavyFlamer,
+    name: RangedWeapon.HeavyFlamer,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       create: {
@@ -579,7 +593,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HeavyStubber,
+    name: RangedWeapon.HeavyStubber,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       create: {
@@ -595,7 +609,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HeavyBolter,
+    name: RangedWeapon.HeavyBolter,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       create: {
@@ -611,7 +625,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.MissileLauncher,
+    name: RangedWeapon.MissileLauncher,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       createMany: {
@@ -643,7 +657,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.HeavyPlasmaGun,
+    name: RangedWeapon.HeavyPlasmaGun,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       createMany: {
@@ -674,7 +688,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Autocannon,
+    name: RangedWeapon.Autocannon,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       create: {
@@ -690,7 +704,7 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
     },
   },
   {
-    name: RangedWeapons.Lascannon,
+    name: RangedWeapon.Lascannon,
     weaponType: { connect: { name: WeaponType.Heavy } },
     ammo: {
       create: {
@@ -705,4 +719,22 @@ export const rangedWeapons: Array<Prisma.RangedWeaponCreateInput> = [
       },
     },
   },
+  {
+    name: WeaponType.Throw,
+    weaponType: { connect: { name: WeaponType.Throw } },
+  },
+  // Blunderbuss
+  {
+    name: RangedWeapon.Blunderbuss,
+    weaponType: { connect: { name: WeaponType.Basic } },
+  },
+  // ScatterCannon
+  // SpearGun
+  // Discus
+  // Handbow
+  // Musket
+  // Scattergun
+  // WebSpinner
+  // LaserGauntlets
+  // BoltLaunchers
 ];

@@ -97,6 +97,7 @@ model Territory {
 
 model HouseRangedWeaponList {
   houseId    String       @id
+  price      Int
   weaponId   Int
   leaderOnly Boolean      @default(false)
   weapon     RangedWeapon @relation(fields: [weaponId], references: [id])
@@ -105,6 +106,7 @@ model HouseRangedWeaponList {
 
 model HouseHandToHandWeaponList {
   houseId    String           @id
+  price      Int
   weaponId   Int
   leaderOnly Boolean          @default(false)
   weapon     HandToHandWeapon @relation(fields: [weaponId], references: [id])
@@ -113,6 +115,7 @@ model HouseHandToHandWeaponList {
 
 model HouseAmmoList {
   houseId    String  @id
+  price      Int
   ammoId     Int
   leaderOnly Boolean @default(false)
   ammo       Ammo    @relation(fields: [ammoId], references: [id])
@@ -121,6 +124,7 @@ model HouseAmmoList {
 
 model HouseEquipmentList {
   houseId     String    @id
+  price       Int
   equipmentId Int
   leaderOnly  Boolean   @default(false)
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
@@ -145,19 +149,15 @@ model Ammo {
   damage            String
   saveModifier      Int             @default(0)
   ammoRoll          Int
-  weaponId          Int
-  weapon            RangedWeapon    @relation(fields: [weaponId], references: [id])
-  // TODO figure out special
-  // Probably a hook
-  // Actually probably not, need to figure out which are context dependert and if logic can be inserted where relevant
-  // E.g. Check for parry at HTH, check for knock-back when doing initiative test
-  // This is likely to get messy
-  // Maybe a hook for each thing, e.g. useFall with all things that can affect it
+  weaponId          Int?
+  isThrowable       Boolean         @default(false)
+  weapon            RangedWeapon?   @relation(fields: [weaponId], references: [id])
   default           Boolean?        @default(true)
   template          String?
   sustainedFireDice Int             @default(0)
   AmmoSpecial       AmmoSpecial[]
   HouseAmmoList     HouseAmmoList[]
+  UnitAmmo          UnitAmmo[]
 }
 
 model RangedWeapon {
@@ -167,6 +167,7 @@ model RangedWeapon {
   weaponType            WeaponType              @relation(fields: [weaponTypeId], references: [name])
   ammo                  Ammo[]
   HouseRangedWeaponList HouseRangedWeaponList[]
+  UnitRangedWeapon      UnitRangedWeapon[]
 }
 
 model HandToHandWeapon {
@@ -180,11 +181,7 @@ model HandToHandWeapon {
   weaponType                WeaponType                  @relation(fields: [weaponTypeId], references: [name])
   HandToHandWeaponSpecial   HandToHandWeaponSpecial[]
   HouseHandToHandWeaponList HouseHandToHandWeaponList[]
-}
-
-model EquipmentType {
-  id        String      @id @unique
-  Equipment Equipment[]
+  UnitHandToHandWeapon      UnitHandToHandWeapon[]
 }
 
 model Equipment {
@@ -193,6 +190,12 @@ model Equipment {
   equipmentTypeId    String
   equipmentType      EquipmentType        @relation(fields: [equipmentTypeId], references: [id])
   HouseEquipmentList HouseEquipmentList[]
+  UnitEquipment      UnitEquipment[]
+}
+
+model EquipmentType {
+  id        String      @id @unique
+  Equipment Equipment[]
 }
 
 model SeriousInjury {
@@ -237,32 +240,73 @@ model User {
 }
 
 model Game {
-  id      Int        @id @default(autoincrement())
-  gangAId Int
-  gangBId Int
-  status  GameStatus
-  state   Json
-  // TODO Figure this out
-  // gangA   Gang       @relation("GangA", fields: [gangAId], references: [id])
-  // gangB   Gang       @relation("GangB", fields: [gangBId], references: [id])
+  id     Int        @id @default(autoincrement())
+  status GameStatus
+  state  Json
+}
+
+model GameUserRelation {
+  id     Int  @id @default(autoincrement())
+  gangId Int
+  gang   Gang @relation(fields: [gangId], references: [id])
 }
 
 model Gang {
-  id        Int      @id @default(autoincrement())
-  name      String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  houseId   String
-  house     House    @relation(fields: [houseId], references: [name])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id               Int                @id @default(autoincrement())
+  name             String
+  user             User               @relation(fields: [userId], references: [id])
+  userId           Int
+  houseId          String
+  house            House              @relation(fields: [houseId], references: [name])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now())
+  GameUserRelation GameUserRelation[]
+  Unit             Unit[]
 }
 
 model Unit {
-  id         Int      @id @default(autoincrement())
-  name       String
-  unitTypeId String
-  unitType   UnitType @relation(fields: [unitTypeId], references: [name])
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  unitTypeId           String
+  gangId               Int
+  unitType             UnitType               @relation(fields: [unitTypeId], references: [name])
+  gang                 Gang                   @relation(fields: [gangId], references: [id])
+  UnitRangedWeapon     UnitRangedWeapon[]
+  UnitHandToHandWeapon UnitHandToHandWeapon[]
+  UnitAmmo             UnitAmmo[]
+  UnitEquipment        UnitEquipment[]
+}
+
+model UnitRangedWeapon {
+  id       Int          @id @default(autoincrement())
+  unitId   Int
+  weaponId Int
+  weapon   RangedWeapon @relation(fields: [weaponId], references: [id])
+  unit     Unit         @relation(fields: [unitId], references: [id])
+}
+
+model UnitHandToHandWeapon {
+  id       Int              @id @default(autoincrement())
+  unitId   Int
+  weaponId Int
+  weapon   HandToHandWeapon @relation(fields: [weaponId], references: [id])
+  unit     Unit             @relation(fields: [unitId], references: [id])
+}
+
+model UnitAmmo {
+  id     Int  @id @default(autoincrement())
+  unitId Int
+  ammoId Int
+  ammo   Ammo @relation(fields: [ammoId], references: [id])
+  unit   Unit @relation(fields: [unitId], references: [id])
+}
+
+model UnitEquipment {
+  id          Int       @id @default(autoincrement())
+  unitId      Int
+  equipmentId Int
+  equipment   Equipment @relation(fields: [equipmentId], references: [id])
+  unit        Unit      @relation(fields: [unitId], references: [id])
 }
 
 enum GameStatus {

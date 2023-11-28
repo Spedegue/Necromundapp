@@ -42,4 +42,8 @@ export enum Equipment {
   DrumMagazine = "Drum Magazine",
   BionicImplant = "Bionic Implant",
   BerserkerChip = "Berserker Chip",
+  Exterminator = "Exterminator",
+  SpiritWard = "Spirit Ward",
+  MirrorShield = "Mirror Shield",
+  ChameleonWings = "Cameleon Wings",
 }

@@ -40,17 +40,15 @@ async function main() {
   await prisma.unitType.createMany({
     data: unitTypes,
   });
-
-  await prisma.handToHandWeapon.createMany({
-    data: meleeWeapons,
-  });
-
   await prisma.weaponType.createMany({
     data: weaponTypes,
   });
-
   await prisma.skillType.createMany({
     data: skillTypes,
+  });
+
+  await prisma.handToHandWeapon.createMany({
+    data: meleeWeapons,
   });
 
   await prisma.skill.createMany({ data: skills });

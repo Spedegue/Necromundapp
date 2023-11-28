@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { EquipmentTypes } from "@/enums/equipmentTypes";
-import { Equipment } from "@/enums/equipment";
+import { EquipmentTypes } from "../../src/enums/equipmentTypes";
+import { Equipment } from "../../src/enums/equipment";
 
 export const equipmentTypes: Prisma.EquipmentTypeCreateInput[] = [
   { id: EquipmentTypes.Armour },

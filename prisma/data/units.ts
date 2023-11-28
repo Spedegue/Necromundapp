@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { UnitCategories } from "@/enums/unitCategories";
-import { UnitTypes } from "@/enums/unitTypes";
+import { UnitCategories } from "../../src/enums/unitCategories";
+import { UnitTypes } from "../../src/enums/unitTypes";
 
 export const unitCategories: Array<Prisma.UnitCategoryCreateInput> = [
   { id: UnitCategories.Standard },
@@ -21,6 +21,18 @@ export const maxStats = {
   i: 6,
   a: 3,
   ld: 9,
+};
+
+export const scavvyMaxStats = {
+  m: 4,
+  wS: 6,
+  bS: 5,
+  s: 4,
+  t: 4,
+  w: 3,
+  i: 6,
+  a: 3,
+  ld: 8,
 };
 
 export const gangerStats = {
@@ -96,5 +108,91 @@ export const unitTypes: Prisma.UnitTypeCreateManyInput[] = [
     maxStats,
     startingXp: "0",
     maxPercent: 50,
+  },
+  {
+    unitCategoryId: UnitCategories.Scavvy,
+    name: UnitTypes.ScavvyBoss,
+    cost: 90,
+    baseStats: {
+      m: 4,
+      wS: 4,
+      bS: 4,
+      s: 3,
+      t: 3,
+      w: 1,
+      i: 4,
+      a: 1,
+      ld: 7,
+    },
+    maxStats: scavvyMaxStats,
+    startingXp: "40+1d6",
+    minQuantity: 1,
+    maxQuantity: 1,
+  },
+  {
+    unitCategoryId: UnitCategories.Scavvy,
+    name: UnitTypes.Scavvy,
+    cost: 25,
+    baseStats: {
+      m: 4,
+      wS: 3,
+      bS: 2,
+      s: 3,
+      t: 3,
+      w: 1,
+      i: 3,
+      a: 1,
+      ld: 6,
+    },
+    maxStats: scavvyMaxStats,
+    startingXp: "5+1d3",
+    minPercent: 50,
+  },
+  {
+    unitCategoryId: UnitCategories.Scavvy,
+    name: UnitTypes.Mutant,
+    cost: 25,
+    baseStats: {
+      m: 4,
+      wS: 3,
+      bS: 2,
+      s: 3,
+      t: 3,
+      w: 1,
+      i: 3,
+      a: 1,
+      ld: 6,
+    },
+    maxStats: scavvyMaxStats,
+    startingXp: "5+1d3",
+  },
+  {
+    unitCategoryId: UnitCategories.Scavvy,
+    name: UnitTypes.Scaly,
+    cost: 140,
+    baseStats: {
+      m: 4,
+      wS: 4,
+      bS: 3,
+      s: 5,
+      t: 4,
+      w: 2,
+      i: 2,
+      a: 2,
+      ld: 6,
+    },
+    maxStats: {
+      m: 4,
+      wS: 7,
+      bS: 6,
+      s: 6,
+      t: 5,
+      w: 4,
+      i: 5,
+      a: 4,
+      ld: 8,
+    },
+    startingXp: "60+1d6",
+    maxQuantity: 2,
   },
 ];

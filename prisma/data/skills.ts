@@ -1,5 +1,5 @@
-import { SkillTypes } from "@/enums/skillTypes";
-import { Skills } from "@/enums/skills";
+import { SkillTypes } from "../../src/enums/skillTypes";
+import { Skills } from "../../src/enums/skills";
 import { Prisma } from "@prisma/client";
 
 export const skillTypes: Array<Prisma.SkillTypeCreateInput> = [

@@ -1,4 +1,4 @@
-export enum RangedWeapons {
+export enum RangedWeapon {
   StubGun = "Stub gun",
   Autopistol = "Autopistol",
   Laspistol = "Laspistol",
@@ -25,9 +25,19 @@ export enum RangedWeapons {
   HeavyPlasmaGun = "Heavy plasma gun",
   Autocannon = "Autocannon",
   Lascannon = "Lascannon",
+  Blunderbuss = "Blunderbuss",
+  ScatterCannon = "Scatter Cannon",
+  SpearGun = "Spear Gun",
+  Discus = "Discus",
+  Handbow = "Handbow",
+  Musket = "Musket",
+  Scattergun = "Scattergun",
+  WebSpinner = "Web Spinner",
+  LaserGauntlets = "Laser Gauntlets",
+  BoltLaunchers = "Bolt Launchers",
 }
 
-export enum HandToHandWeapons {
+export enum HandToHandWeapon {
   Knife = "Knife",
   ChainOrFlail = "Chain/Flail",
   Club = "Club",
@@ -38,6 +48,9 @@ export enum HandToHandWeapons {
   ShockMaul = "Shock Maul",
   PowerSword = "Power Sword",
   PowerFist = "Power Fist",
+  Eviscerator = "Eviscerator",
+  SpiritTotem = "Spirit Totem",
+  MonomolecularSword = "Monomolecular Sword",
 }
 
 export enum Ammo {
@@ -83,4 +96,5 @@ export enum Ammo {
   HPGMaxPower = "HPG(max Power)",
   Autocannon = "Autocannon",
   Lascannon = "Lascannon",
+  ToxBomb = "Tox Bomb",
 }

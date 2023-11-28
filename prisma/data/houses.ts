@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { House } from "@/enums/house";
-import { UnitCategories } from "@/enums/unitCategories";
+import { House } from "../../src/enums/house";
+import { UnitCategories } from "../../src/enums/unitCategories";
 
 export const houses: Array<Prisma.HouseCreateInput> = [
   { name: House.Cawdor },
