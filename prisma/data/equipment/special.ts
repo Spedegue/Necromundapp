@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Ammo, RangedWeapon } from "../../../src/enums/weapons";
 import { EquipmentType } from "../../../src/enums/equipmentType";
-import { Template } from "@/enums/template";
+import { Template } from "../../../src/enums/template";
 
 export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
   {
@@ -82,7 +82,10 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.FragGrenade, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: { name: Ammo.FragGrenade, equipmentTypeId: EquipmentType.Ammo },
+        where: { name: Ammo.FragGrenade },
+      },
     },
     rangedStats: {
       create: {
@@ -116,7 +119,10 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.SmokeBomb, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: { name: Ammo.SmokeBomb, equipmentTypeId: EquipmentType.Ammo },
+        where: { name: Ammo.SmokeBomb },
+      },
     },
     rangedStats: {
       create: {
@@ -149,7 +155,13 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.ChokeGrenade, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: {
+          name: Ammo.ChokeGrenade,
+          equipmentTypeId: EquipmentType.Ammo,
+        },
+        where: { name: Ammo.ChokeGrenade },
+      },
     },
     rangedStats: {
       create: {
@@ -182,7 +194,13 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.ScareGrenade, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: {
+          name: Ammo.ScareGrenade,
+          equipmentTypeId: EquipmentType.Ammo,
+        },
+        where: { name: Ammo.ScareGrenade },
+      },
     },
     rangedStats: {
       create: {
@@ -215,7 +233,10 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.PhotonFlare, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: { name: Ammo.PhotonFlare, equipmentTypeId: EquipmentType.Ammo },
+        where: { name: Ammo.PhotonFlare },
+      },
     },
     rangedStats: {
       create: {
@@ -248,7 +269,10 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.KrakGrenade, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: { name: Ammo.KrakGrenade, equipmentTypeId: EquipmentType.Ammo },
+        where: { name: Ammo.KrakGrenade },
+      },
     },
     rangedStats: {
       create: {
@@ -281,7 +305,13 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: { name: Ammo.PlasmaGrenade, equipmentTypeId: EquipmentType.Ammo },
+      connectOrCreate: {
+        create: {
+          name: Ammo.PlasmaGrenade,
+          equipmentTypeId: EquipmentType.Ammo,
+        },
+        where: { name: Ammo.PlasmaGrenade },
+      },
     },
     rangedStats: {
       create: {
@@ -315,9 +345,12 @@ export const specialAmmo: Prisma.WeaponAmmoCreateInput[] = [
       },
     },
     ammo: {
-      create: {
-        name: Ammo.HallucinogenGrenade,
-        equipmentTypeId: EquipmentType.Ammo,
+      connectOrCreate: {
+        create: {
+          name: Ammo.HallucinogenGrenade,
+          equipmentTypeId: EquipmentType.Ammo,
+        },
+        where: { name: Ammo.HallucinogenGrenade },
       },
     },
     rangedStats: {

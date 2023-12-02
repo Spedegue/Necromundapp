@@ -1,6 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { skillTypes, skills } from "./data/skills";
-import { meleeWeapons, weaponTypes, rangedWeapons } from "./data/weapons";
 import { houses, houseUnitTypes } from "./data/houses";
 import { unitCategories, unitTypes } from "./data/units";
 import { equipment, equipmentTypes } from "./data/equipment/equipment";
@@ -10,6 +9,7 @@ import { specialAmmo } from "./data/equipment/special";
 import { pistolAmmo } from "./data/equipment/pistol";
 import { basicAmmo } from "./data/equipment/basic";
 import { heavyAmmo } from "./data/equipment/heavy";
+import { handToHandSeed } from "./data/equipment/handToHand";
 
 const prisma = new PrismaClient();
 
@@ -20,6 +20,10 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.skill.deleteMany({});
   await prisma.houseEquipmentList.deleteMany({});
+  await prisma.weaponAmmo.deleteMany({});
+  await prisma.equipment.deleteMany({});
+  await prisma.rangedStats.deleteMany({});
+  await prisma.weaponStats.deleteMany({});
   await prisma.unitType.deleteMany({});
   await prisma.houseUnitType.deleteMany({});
   await prisma.unitCategory.deleteMany({});
@@ -48,41 +52,41 @@ async function main() {
   await prisma.equipmentType.createMany({ data: equipmentTypes });
   await prisma.equipment.createMany({ data: equipment });
 
+  async function insertRangedWeapons(
+    weapons: Array<Prisma.WeaponAmmoCreateInput>
+  ) {
+    for await (const weapon of weapons) {
+      try {
+        await prisma.weaponAmmo.create({
+          data: weapon,
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  await insertRangedWeapons(pistolAmmo);
+  await insertRangedWeapons(basicAmmo);
+  await insertRangedWeapons(specialAmmo);
+  await insertRangedWeapons(heavyAmmo);
+  await insertRangedWeapons(throwAmmo);
+
+  for await (const weapon of handToHandSeed) {
+    await prisma.weaponStats.create({ data: weapon });
+  }
+
   async function insertHouseEquipmentLists() {
     for await (const list of houseEquipmentListSeed) {
+      // console.log(list);
+
       await prisma.houseEquipmentList.create({
         data: list,
       });
     }
   }
 
-  async function insertRangedWeapons(
-    weapons: Array<Prisma.WeaponAmmoCreateInput>
-  ) {
-    for await (const weapon of weapons) {
-      await prisma.weaponAmmo.create({
-        data: weapon,
-      });
-    }
-  }
-
-  await insertRangedWeapons(throwAmmo);
-  await insertRangedWeapons(pistolAmmo);
-  await insertRangedWeapons(basicAmmo);
-  await insertRangedWeapons(specialAmmo);
-  await insertRangedWeapons(heavyAmmo);
-
   await insertHouseEquipmentLists();
-
-  // async function insertRangedWeapons() {
-  //   for (const weaponData of rangedWeapons) {
-  //     await prisma.rangedWeapon.create({
-  //       data: weaponData,
-  //     });
-  //   }
-  // }
-  //
-  // await insertRangedWeapons();
 }
 
 main()

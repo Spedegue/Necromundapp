@@ -93,12 +93,15 @@ model Territory {
 }
 
 model HouseEquipmentList {
-  houseId     String    @id
+  id          Int       @id @default(autoincrement())
+  houseId     String
   price       String
   equipmentId Int
   leaderOnly  Boolean   @default(false)
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
   house       House     @relation(fields: [houseId], references: [name])
+
+  @@unique([houseId, equipmentId])
 }
 
 model EquipmentType {
@@ -111,7 +114,6 @@ model Equipment {
   name               String               @unique
   equipmentTypeId    String
   equipmentType      EquipmentType        @relation(fields: [equipmentTypeId], references: [id])
-  // HouseEquipmentList HouseEquipmentList[]
   UnitEquipment      UnitEquipment[]
   HouseEquipmentList HouseEquipmentList[]
   weaponAmmoAsAmmo   WeaponAmmo[]         @relation("ammo")

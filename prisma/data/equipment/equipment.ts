@@ -1,20 +1,12 @@
 import { Prisma } from "@prisma/client";
-import { EquipmentType } from "@/enums/equipmentType";
-import { Equipment } from "@/enums/equipment";
-import { Ammo, RangedWeapon } from "@/enums/weapons";
-import { Template } from "@/enums/template";
+import { EquipmentType } from "../../../src/enums/equipmentType";
+import { Equipment } from "../../../src/enums/equipment";
 
-export const equipmentTypes: Prisma.EquipmentTypeCreateInput[] = [
-  { id: EquipmentType.Armour },
-  { id: EquipmentType.GunMod },
-  { id: EquipmentType.Bionic },
-  { id: EquipmentType.Misc },
-  { id: EquipmentType.Pistol },
-  { id: EquipmentType.Basic },
-  { id: EquipmentType.Special },
-  { id: EquipmentType.Heavy },
-  { id: EquipmentType.HandToHand },
-];
+export const equipmentTypes: Prisma.EquipmentTypeCreateInput[] = Object.values(
+  EquipmentType
+).map((equipmentType) => ({
+  id: equipmentType,
+}));
 
 export const equipment: Prisma.EquipmentCreateManyInput[] = [
   { name: Equipment.MeshArmour, equipmentTypeId: EquipmentType.Armour },

@@ -1,7 +1,10 @@
 import { Prisma } from "@prisma/client";
-import { Ammo, HandToHandWeapon, RangedWeapon } from "@/enums/weapons";
-import { EquipmentType } from "@/enums/equipmentType";
-import { Template } from "@/enums/template";
+import {
+  Ammo,
+  HandToHandWeapon,
+  RangedWeapon,
+} from "../../../src/enums/weapons";
+import { EquipmentType } from "../../../src/enums/equipmentType";
 
 export const handToHandSeed: Prisma.WeaponStatsCreateInput[] = [
   {
