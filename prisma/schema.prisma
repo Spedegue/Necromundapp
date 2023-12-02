@@ -11,14 +11,11 @@ datasource db {
 }
 
 model House {
-  name                      String                      @id @unique
-  isOutlander               Boolean                     @default(false)
-  Gang                      Gang[]
-  HouseWeaponList           HouseRangedWeaponList[]
-  HouseUnitType             HouseUnitType[]
-  HouseHandToHandWeaponList HouseHandToHandWeaponList[]
-  HouseAmmoList             HouseAmmoList[]
-  HouseEquipmentList        HouseEquipmentList[]
+  name               String               @id @unique
+  isOutlander        Boolean              @default(false)
+  Gang               Gang[]
+  HouseUnitType      HouseUnitType[]
+  HouseEquipmentList HouseEquipmentList[]
 }
 
 model UnitType {
@@ -95,102 +92,13 @@ model Territory {
   income String
 }
 
-model HouseRangedWeaponList {
-  houseId    String       @id
-  price      Int
-  weaponId   Int
-  leaderOnly Boolean      @default(false)
-  weapon     RangedWeapon @relation(fields: [weaponId], references: [id])
-  house      House        @relation(fields: [houseId], references: [name])
-}
-
-model HouseHandToHandWeaponList {
-  houseId    String           @id
-  price      Int
-  weaponId   Int
-  leaderOnly Boolean          @default(false)
-  weapon     HandToHandWeapon @relation(fields: [weaponId], references: [id])
-  house      House            @relation(fields: [houseId], references: [name])
-}
-
-model HouseAmmoList {
-  houseId    String  @id
-  price      Int
-  ammoId     Int
-  leaderOnly Boolean @default(false)
-  ammo       Ammo    @relation(fields: [ammoId], references: [id])
-  house      House   @relation(fields: [houseId], references: [name])
-}
-
 model HouseEquipmentList {
   houseId     String    @id
-  price       Int
+  price       String
   equipmentId Int
   leaderOnly  Boolean   @default(false)
   equipment   Equipment @relation(fields: [equipmentId], references: [id])
   house       House     @relation(fields: [houseId], references: [name])
-}
-
-model WeaponType {
-  name             String             @id @unique
-  RangedWeapon     RangedWeapon[]
-  HandToHandWeapon HandToHandWeapon[]
-}
-
-model Ammo {
-  id                Int             @id @default(autoincrement())
-  name              String          @unique
-  shortRange        Int
-  longRange         Int
-  longModifier      Int             @default(0)
-  shortModifier     Int             @default(0)
-  strength          Int
-  // Dice parser
-  damage            String
-  saveModifier      Int             @default(0)
-  ammoRoll          Int
-  weaponId          Int?
-  isThrowable       Boolean         @default(false)
-  weapon            RangedWeapon?   @relation(fields: [weaponId], references: [id])
-  default           Boolean?        @default(true)
-  template          String?
-  sustainedFireDice Int             @default(0)
-  AmmoSpecial       AmmoSpecial[]
-  HouseAmmoList     HouseAmmoList[]
-  UnitAmmo          UnitAmmo[]
-}
-
-model RangedWeapon {
-  id                    Int                     @id @default(autoincrement())
-  name                  String                  @unique
-  weaponTypeId          String
-  weaponType            WeaponType              @relation(fields: [weaponTypeId], references: [name])
-  ammo                  Ammo[]
-  HouseRangedWeaponList HouseRangedWeaponList[]
-  UnitRangedWeapon      UnitRangedWeapon[]
-}
-
-model HandToHandWeapon {
-  id                        Int                         @id @default(autoincrement())
-  name                      String                      @unique
-  // Integrate with dice roll parser
-  strength                  String
-  damage                    String
-  saveModifier              Int                         @default(0)
-  weaponTypeId              String                      @default("Hand-to-Hand")
-  weaponType                WeaponType                  @relation(fields: [weaponTypeId], references: [name])
-  HandToHandWeaponSpecial   HandToHandWeaponSpecial[]
-  HouseHandToHandWeaponList HouseHandToHandWeaponList[]
-  UnitHandToHandWeapon      UnitHandToHandWeapon[]
-}
-
-model Equipment {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @unique
-  equipmentTypeId    String
-  equipmentType      EquipmentType        @relation(fields: [equipmentTypeId], references: [id])
-  HouseEquipmentList HouseEquipmentList[]
-  UnitEquipment      UnitEquipment[]
 }
 
 model EquipmentType {
@@ -198,39 +106,80 @@ model EquipmentType {
   Equipment Equipment[]
 }
 
+model Equipment {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  equipmentTypeId    String
+  equipmentType      EquipmentType        @relation(fields: [equipmentTypeId], references: [id])
+  // HouseEquipmentList HouseEquipmentList[]
+  UnitEquipment      UnitEquipment[]
+  HouseEquipmentList HouseEquipmentList[]
+  weaponAmmoAsAmmo   WeaponAmmo[]         @relation("ammo")
+  weaponAmmoAsWeapon WeaponAmmo[]         @relation("weapon")
+  handToHandStats    WeaponStats?
+}
+
+model WeaponAmmo {
+  ammoId        Int
+  ammo          Equipment   @relation("ammo", fields: [ammoId], references: [id])
+  weaponId      Int
+  weapon        Equipment   @relation("weapon", fields: [weaponId], references: [id])
+  rangedStatsId Int
+  rangedStats   RangedStats @relation(fields: [rangedStatsId], references: [id])
+  default       Boolean     @default(true)
+
+  @@id([ammoId, weaponId])
+}
+
+model WeaponStats {
+  id           Int           @id @default(autoincrement())
+  strength     String
+  damage       String
+  weaponId     Int?          @unique
+  weapon       Equipment?    @relation(fields: [weaponId], references: [id])
+  saveModifier Int           @default(0)
+  RangedStats  RangedStats[]
+}
+
+model RangedStats {
+  id                Int          @id @default(autoincrement())
+  shortRange        String
+  longRange         String
+  longModifier      Int          @default(0)
+  shortModifier     Int          @default(0)
+  ammoRoll          Int
+  weaponStatsId     Int
+  weaponStats       WeaponStats  @relation(fields: [weaponStatsId], references: [id])
+  default           Boolean?     @default(true)
+  template          String?
+  sustainedFireDice Int          @default(0)
+  WeaponAmmo        WeaponAmmo[]
+}
+
+// model HandToHandStat {
+//   id           Int    @id @default(autoincrement())
+//   strength     String
+//   damage       String
+//   saveModifier Int    @default(0)
+// }
+
 model SeriousInjury {
   // Injury chart Id? E.g. for shock maul, plague zombies etc.
   id   Int    @id
   name String
-  //   TODO - useSeriousInjury hook
 }
 
 model Special {
-  id                      Int                       @id @default(autoincrement())
-  name                    String
-  HandToHandWeaponSpecial HandToHandWeaponSpecial[]
-  AmmoSpecial             AmmoSpecial[]
+  id   Int    @id @default(autoincrement())
+  name String
+  // HandToHandWeaponSpecial HandToHandWeaponSpecial[]
 }
 
-model HandToHandWeaponSpecial {
-  specialId Int
-  special   Special          @relation(fields: [specialId], references: [id])
-  weaponId  Int
-  weapon    HandToHandWeapon @relation(fields: [weaponId], references: [id])
-
-  @@id([specialId, weaponId])
-}
-
-model AmmoSpecial {
-  specialId Int
-  special   Special @relation(fields: [specialId], references: [id])
-  ammoId    Int
-  ammo      Ammo    @relation(fields: [ammoId], references: [id])
-
-  @@id([specialId, ammoId])
-}
-
-// Non-Fixed models
+//##############################################
+//###############################
+//               Non-Fixed models
+// ##############################
+// #############################################
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -265,40 +214,14 @@ model Gang {
 }
 
 model Unit {
-  id                   Int                    @id @default(autoincrement())
-  name                 String
-  unitTypeId           String
-  gangId               Int
-  unitType             UnitType               @relation(fields: [unitTypeId], references: [name])
-  gang                 Gang                   @relation(fields: [gangId], references: [id])
-  UnitRangedWeapon     UnitRangedWeapon[]
-  UnitHandToHandWeapon UnitHandToHandWeapon[]
-  UnitAmmo             UnitAmmo[]
-  UnitEquipment        UnitEquipment[]
-}
+  id         Int      @id @default(autoincrement())
+  name       String
+  unitTypeId String
+  gangId     Int
+  unitType   UnitType @relation(fields: [unitTypeId], references: [name])
+  gang       Gang     @relation(fields: [gangId], references: [id])
 
-model UnitRangedWeapon {
-  id       Int          @id @default(autoincrement())
-  unitId   Int
-  weaponId Int
-  weapon   RangedWeapon @relation(fields: [weaponId], references: [id])
-  unit     Unit         @relation(fields: [unitId], references: [id])
-}
-
-model UnitHandToHandWeapon {
-  id       Int              @id @default(autoincrement())
-  unitId   Int
-  weaponId Int
-  weapon   HandToHandWeapon @relation(fields: [weaponId], references: [id])
-  unit     Unit             @relation(fields: [unitId], references: [id])
-}
-
-model UnitAmmo {
-  id     Int  @id @default(autoincrement())
-  unitId Int
-  ammoId Int
-  ammo   Ammo @relation(fields: [ammoId], references: [id])
-  unit   Unit @relation(fields: [unitId], references: [id])
+  UnitEquipment UnitEquipment[]
 }
 
 model UnitEquipment {

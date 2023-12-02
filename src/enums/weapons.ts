@@ -35,6 +35,7 @@ export enum RangedWeapon {
   WebSpinner = "Web Spinner",
   LaserGauntlets = "Laser Gauntlets",
   BoltLaunchers = "Bolt Launchers",
+  Throw = "Throw",
 }
 
 export enum HandToHandWeapon {
@@ -83,6 +84,7 @@ export enum Ammo {
   KrakGrenade = "Krak Grenade",
   PlasmaGrenade = "Plasma Grenade",
   HallucinogenGrenade = "Hallucinogen Grenade",
+  MeltaBomb = "Melta Bomb",
   PGLowPower = "PG(Low Power)",
   PGMaxPower = "PG(max Power)",
   Meltagun = "Meltagun",

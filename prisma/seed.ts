@@ -3,7 +3,13 @@ import { skillTypes, skills } from "./data/skills";
 import { meleeWeapons, weaponTypes, rangedWeapons } from "./data/weapons";
 import { houses, houseUnitTypes } from "./data/houses";
 import { unitCategories, unitTypes } from "./data/units";
-import { equipment, equipmentTypes } from "./data/equipment";
+import { equipment, equipmentTypes } from "./data/equipment/equipment";
+import { houseEquipmentListSeed } from "./data/houseWeaponLists";
+import { throwAmmo } from "./data/equipment/throw";
+import { specialAmmo } from "./data/equipment/special";
+import { pistolAmmo } from "./data/equipment/pistol";
+import { basicAmmo } from "./data/equipment/basic";
+import { heavyAmmo } from "./data/equipment/heavy";
 
 const prisma = new PrismaClient();
 
@@ -13,17 +19,10 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.skill.deleteMany({});
-  await prisma.ammo.deleteMany({});
-  await prisma.houseRangedWeaponList.deleteMany({});
-  await prisma.houseAmmoList.deleteMany({});
-  await prisma.houseHandToHandWeaponList.deleteMany({});
   await prisma.houseEquipmentList.deleteMany({});
-  await prisma.rangedWeapon.deleteMany({});
-  await prisma.handToHandWeapon.deleteMany({});
   await prisma.unitType.deleteMany({});
   await prisma.houseUnitType.deleteMany({});
   await prisma.unitCategory.deleteMany({});
-  await prisma.weaponType.deleteMany({});
   await prisma.house.deleteMany({});
   await prisma.skillType.deleteMany({});
   await prisma.equipmentType.deleteMany({});
@@ -40,15 +39,8 @@ async function main() {
   await prisma.unitType.createMany({
     data: unitTypes,
   });
-  await prisma.weaponType.createMany({
-    data: weaponTypes,
-  });
   await prisma.skillType.createMany({
     data: skillTypes,
-  });
-
-  await prisma.handToHandWeapon.createMany({
-    data: meleeWeapons,
   });
 
   await prisma.skill.createMany({ data: skills });
@@ -56,15 +48,41 @@ async function main() {
   await prisma.equipmentType.createMany({ data: equipmentTypes });
   await prisma.equipment.createMany({ data: equipment });
 
-  async function insertRangedWeapons() {
-    for (const weaponData of rangedWeapons) {
-      await prisma.rangedWeapon.create({
-        data: weaponData,
+  async function insertHouseEquipmentLists() {
+    for await (const list of houseEquipmentListSeed) {
+      await prisma.houseEquipmentList.create({
+        data: list,
       });
     }
   }
 
-  await insertRangedWeapons();
+  async function insertRangedWeapons(
+    weapons: Array<Prisma.WeaponAmmoCreateInput>
+  ) {
+    for await (const weapon of weapons) {
+      await prisma.weaponAmmo.create({
+        data: weapon,
+      });
+    }
+  }
+
+  await insertRangedWeapons(throwAmmo);
+  await insertRangedWeapons(pistolAmmo);
+  await insertRangedWeapons(basicAmmo);
+  await insertRangedWeapons(specialAmmo);
+  await insertRangedWeapons(heavyAmmo);
+
+  await insertHouseEquipmentLists();
+
+  // async function insertRangedWeapons() {
+  //   for (const weaponData of rangedWeapons) {
+  //     await prisma.rangedWeapon.create({
+  //       data: weaponData,
+  //     });
+  //   }
+  // }
+  //
+  // await insertRangedWeapons();
 }
 
 main()
